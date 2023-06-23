@@ -45,7 +45,7 @@ class TrasactionController extends Controller
             'type' => $request->type,
             'category' => $request->category,
             'amount' => $request->amount,
-            'description' => $request->description,
+            'desc' => $request->description,
         ]);
 
         return response()->json([
