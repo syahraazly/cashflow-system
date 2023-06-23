@@ -12,7 +12,12 @@ class TrasactionController extends Controller
      */
     public function index()
     {
-        //
+        $transactions = Trasaction::all();
+
+        return response()->json([
+            'success' => true,
+            'data' => $transactions
+        ]);
     }
 
     /**
@@ -28,15 +33,45 @@ class TrasactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'user_id' => 'required',
+            'type' => 'required',
+            'category' => 'required',
+            'amount' => 'required',
+        ]);
+
+        $transaction = Trasaction::create([
+            'user_id' => $request->user_id,
+            'type' => $request->type,
+            'category' => $request->category,
+            'amount' => $request->amount,
+            'description' => $request->description,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'data' => $transaction
+        ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Trasaction $trasaction)
+    public function show(Trasaction $trasaction, $transaction_id)
     {
-        //
+        $transaction = Trasaction::find($transaction_id);
+
+        if (!$transaction) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Transaction not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $transaction
+        ]);
     }
 
     /**
@@ -50,7 +85,7 @@ class TrasactionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Trasaction $trasaction)
+    public function update(Request $request, Trasaction $trasaction, $transaction_id)
     {
         //
     }
@@ -58,8 +93,22 @@ class TrasactionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Trasaction $trasaction)
+    public function destroy(Trasaction $trasaction, $transaction_id)
     {
-        //
+        $transaction = Trasaction::find($transaction_id);
+
+        if (!$transaction) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Transaction not found'
+            ], 404);
+        }
+
+        $transaction->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Transaction deleted successfully'
+        ]);
     }
 }
